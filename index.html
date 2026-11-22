@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aggregate Shape Test Calculator</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪨</text></svg>">
+<style>
+:root{--bg:#f6f5f1;--card:#fff;--tx:#1f2328;--mut:#666b73;--bd:#d9d6cc;--ac:#b4561f;--acbg:#fbeee5;--ok:#1d7a46;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17181a;--card:#222426;--tx:#ececec;--mut:#9aa0a6;--bd:#3a3d40;--ac:#f0975f;--acbg:#33261c;--ok:#5fcf8f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#17181a;--card:#222426;--tx:#ececec;--mut:#9aa0a6;--bd:#3a3d40;--ac:#f0975f;--acbg:#33261c;--ok:#5fcf8f;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:980px;margin:0 auto;padding:18px 14px 40px}
+h1{font-size:1.4rem;margin:.2em 0}
+.sub{color:var(--mut);margin:0 0 16px}
+.tabs{display:flex;gap:8px;margin-bottom:14px}
+.tabs button{flex:1;padding:10px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:10px;font:inherit;font-weight:600;cursor:pointer}
+.tabs button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:14px}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:640px}
+th,td{border:1px solid var(--bd);padding:6px 8px;text-align:center;font-size:.9rem}
+th{background:var(--acbg);font-weight:600}
+td.c{color:var(--mut);font-variant-numeric:tabular-nums}
+input{width:100%;min-width:80px;padding:6px;border:1px solid var(--bd);border-radius:6px;background:var(--bg);color:var(--tx);font:inherit;text-align:right}
+input:focus{outline:2px solid var(--ac);border-color:var(--ac)}
+tfoot td{font-weight:700;background:var(--acbg)}
+.res{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.r{border:1px solid var(--bd);border-radius:10px;padding:12px;background:var(--acbg)}
+.r span{display:block;color:var(--mut);font-size:.8rem}
+.r b{font-size:1.5rem;color:var(--ac)}
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+label{display:block;font-size:.85rem;color:var(--mut);margin-bottom:3px}
+.f{font-size:.8rem;color:var(--mut);margin-top:10px}
+button.reset{margin-top:10px;padding:8px 14px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:8px;cursor:pointer;font:inherit}
+.hide{display:none}
+</style>
+</head>
+<body>
+<main>
+<h1>Aggregate Shape Test Calculator</h1>
+<p class="sub">Enter your lab readings below – results update instantly using the formulas from the TE Lab spreadsheet.</p>
+<div class="tabs">
+ <button id="t1" class="on">Flakiness &amp; Elongation</button>
+ <button id="t2">Angularity Number</button>
+</div>
+
+<section id="p1">
+ <div class="card scroll">
+  <table>
+   <thead>
+    <tr><th rowspan="2">Sl.</th><th colspan="2">Size of aggregates (mm)</th><th rowspan="2">Thickness gauge (mm)</th><th rowspan="2">Length gauge (mm)</th>
+    <th rowspan="2">Weight of fraction (≥200 pieces) W, g</th><th rowspan="2">Passing thickness gauge w, g</th><th rowspan="2">Retained on thickness gauge (W−w), g</th><th rowspan="2">Retained on length gauge x, g</th></tr>
+    <tr><th>Passing IS sieve</th><th>Retained on IS sieve</th></tr>
+   </thead>
+   <tbody id="rows"></tbody>
+   <tfoot><tr><td colspan="5">Total</td><td id="tF"></td><td id="tG"></td><td id="tH"></td><td id="tI"></td></tr></tfoot>
+  </table>
+ </div>
+ <div class="res">
+  <div class="r"><span>Flakiness Index = w ÷ W</span><b id="fi">–</b></div>
+  <div class="r"><span>Elongation Index = x ÷ (W−w)</span><b id="ei">–</b></div>
+  <div class="r"><span>Combined Flakiness &amp; Elongation Index</span><b id="ci">–</b></div>
+ </div>
+ <p class="f">Thickness gauge = ½(passing + retained) × 0.6 · Length gauge = ½(passing + retained) × 1.8 (not used for the 63–50 mm fraction).</p>
+ <button class="reset" id="rs1">Clear all inputs</button>
+</section>
+
+<section id="p2" class="hide">
+ <div class="card">
+  <div class="form">
+   <div><label>Weight of cylinder (g)</label><input id="a1" type="number" step="any" value="3682"></div>
+   <div><label>Weight of cylinder + aggregates (g)</label><input id="a2" type="number" step="any" value="8515"></div>
+   <div><label>Weight of cylinder + water (g)</label><input id="a3" type="number" step="any" value="6660"></div>
+   <div><label>Specific gravity of aggregate, G</label><input id="a4" type="number" step="any" value="2.79"></div>
+  </div>
+ </div>
+ <div class="res">
+  <div class="r"><span>Weight of water filling cylinder, C (g)</span><b id="aC">–</b></div>
+  <div class="r"><span>Weight of aggregates filling cylinder, W (g)</span><b id="aW">–</b></div>
+  <div class="r"><span>Angularity Number = 67 − (100W ÷ CG)</span><b id="aN">–</b></div>
+ </div>
+ <p class="f">Result is rounded to the nearest whole number, as in the spreadsheet.</p>
+</section>
+</main>
+<script>
+const sizes=[[63,50],[50,40],[40,31.5],[31.5,25],[25,20],[20,16],[16,12.5],[12.5,10],[10,6.3]];
+const sample=[[0,0,0],[0,0,0],[890,223,70],[1465,245,183],[1384,185,155],[380,35,98],[47,3,5],[5,1,4],[0,0,0]];
+const $=id=>document.getElementById(id);
+const fmt=(n,d=2)=>Number.isFinite(n)?(+n.toFixed(d)).toString():"–";
+const pct=n=>Number.isFinite(n)?(n*100).toFixed(2)+"%":"–";
+const v=e=>{const x=parseFloat(e.value);return Number.isFinite(x)?x:0};
+const tb=$("rows");
+sizes.forEach(([p,r],i)=>{
+  const mid=(p+r)/2,tr=document.createElement("tr");
+  tr.innerHTML=`<td>${i+1}</td><td>${p}</td><td>${r}</td><td class="c">${fmt(mid*0.6)}</td><td class="c">${i==0?"–":fmt(mid*1.8)}</td>
+  <td><input type="number" min="0" step="any" data-k="W" value="${sample[i][0]}"></td>
+  <td><input type="number" min="0" step="any" data-k="w" value="${sample[i][1]}"></td>
+  <td class="c" data-k="d">0</td>
+  <td><input type="number" min="0" step="any" data-k="x" value="${sample[i][2]}"></td>`;
+  tb.appendChild(tr);
+});
+function calc(){
+  let W=0,w=0,d=0,x=0;
+  [...tb.rows].forEach(tr=>{
+    const q=k=>tr.querySelector(`input[data-k=${k}]`);
+    const a=v(q("W")),b=v(q("w")),c=v(q("x"));
+    tr.querySelector("[data-k=d]").textContent=fmt(a-b);
+    W+=a;w+=b;d+=a-b;x+=c;
+  });
+  $("tF").textContent=fmt(W);$("tG").textContent=fmt(w);$("tH").textContent=fmt(d);$("tI").textContent=fmt(x);
+  const fi=W>0?w/W:NaN, ei=d>0?x/d:NaN;
+  $("fi").textContent=pct(fi);$("ei").textContent=pct(ei);$("ci").textContent=pct(fi+ei);
+}
+tb.addEventListener("input",calc);
+$("rs1").onclick=()=>{tb.querySelectorAll("input").forEach(i=>i.value="");calc()};
+function ang(){
+  const cyl=v($("a1")),ca=v($("a2")),cw=v($("a3")),G=v($("a4"));
+  const C=cw-cyl,Wt=ca-cyl;
+  $("aC").textContent=fmt(C);$("aW").textContent=fmt(Wt);
+  $("aN").textContent=(C>0&&G>0)?Math.round(67-(100*Wt)/(C*G)):"–";
+}
+["a1","a2","a3","a4"].forEach(i=>$(i).addEventListener("input",ang));
+function tab(n){
+  $("p1").classList.toggle("hide",n!=1);$("p2").classList.toggle("hide",n!=2);
+  $("t1").classList.toggle("on",n==1);$("t2").classList.toggle("on",n==2);
+}
+$("t1").onclick=()=>tab(1);$("t2").onclick=()=>tab(2);
+calc();ang();
+</script>
+</body>
+</html>
