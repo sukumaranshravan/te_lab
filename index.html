@@ -16,7 +16,13 @@ body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,-app
 main{max-width:980px;margin:0 auto;padding:18px 14px 40px}
 h1{font-size:1.4rem;margin:.2em 0}
 .sub{color:var(--mut);margin:0 0 16px}
-.tabs{display:flex;gap:8px;margin-bottom:14px}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.tabs button{min-width:140px}
+.ins h2{font-size:1.05rem;margin:0 0 6px;color:var(--ac)}
+.ins h3{font-size:.9rem;margin:10px 0 2px}
+.ins ul{margin:4px 0 6px;padding-left:20px}
+.ins li{margin:2px 0}
+.ins .ref{color:var(--mut);font-size:.8rem}
 .tabs button{flex:1;padding:10px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:10px;font:inherit;font-weight:600;cursor:pointer}
 .tabs button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
 .card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:14px}
@@ -47,6 +53,7 @@ button.reset{margin-top:10px;padding:8px 14px;border:1px solid var(--bd);backgro
  <button id="t1" class="on">Flakiness &amp; Elongation</button>
  <button id="t2">Angularity Number</button>
  <button id="t3">Impact Value</button>
+ <button id="t4">Instructions</button>
 </div>
 
 <section id="p1">
@@ -99,6 +106,80 @@ button.reset{margin-top:10px;padding:8px 14px;border:1px solid var(--bd);backgro
  </div>
  <p class="f">Test per IS 2386 (Part 4): two trials on the 12.5–10 mm fraction. W2 + W3 should be within 1 g of W1, otherwise the trial should be repeated. IS 383 limits: 30% max for wearing surfaces, 45% max for other concrete. Enter one trial only if you don't have a second; blank trials are ignored in the mean.</p>
  <button class="reset" id="rs3">Clear all inputs</button>
+</section>
+<section id="p4" class="hide ins">
+ <div class="card">
+  <h2>1. Flakiness &amp; Elongation Index (Shape Test)</h2>
+  <div class="ref">Ref: IS 2386 (Part 1) – 1963, Cl. 4 &amp; 5; combined index limit as per MoRTH. Applies to aggregate coarser than 6.3 mm.</div>
+  <h3>Apparatus</h3>
+  <ul><li>Thickness gauge and length gauge</li><li>IS sieves 63, 50, 40, 31.5, 25, 20, 16, 12.5, 10 and 6.3 mm</li><li>Balance (5 kg capacity, readable to 1 g)</li></ul>
+  <h3>Procedure</h3>
+  <ul>
+   <li>Sieve the sample through the set of IS sieves and separate it into the size fractions.</li>
+   <li>From each fraction take at least 200 pieces and weigh it (<b>W</b>). Fractions with too little material can be ignored.</li>
+   <li><b>Flakiness:</b> pass each piece of a fraction through the matching slot of the thickness gauge (slot = 0.6 × mean size of the fraction).</li>
+   <li>Collect all pieces that pass the slot (flaky particles) and weigh them (<b>w</b>).</li>
+   <li>Weigh the pieces retained on the thickness gauge (non-flaky) – this is W − w.</li>
+   <li><b>Elongation:</b> try each non-flaky piece in the matching opening of the length gauge (opening = 1.8 × mean size). Pieces that cannot pass through with their long side are elongated.</li>
+   <li>Weigh the elongated pieces retained on the length gauge (<b>x</b>) for each fraction.</li>
+   <li>Enter W, w and x for each fraction on the first tab.</li>
+  </ul>
+  <h3>Calculation &amp; limits</h3>
+  <ul>
+   <li>Flakiness Index = (Σw ÷ ΣW) × 100</li>
+   <li>Elongation Index = (Σx ÷ Σ(W − w)) × 100</li>
+   <li>Combined index = Flakiness + Elongation. A commonly used limit for road aggregate is 30% (MoRTH); some specs set other limits, so check your project specification.</li>
+  </ul>
+ </div>
+
+ <div class="card">
+  <h2>2. Angularity Number</h2>
+  <div class="ref">Ref: IS 2386 (Part 1) – 1963, Cl. 6.</div>
+  <h3>Apparatus</h3>
+  <ul><li>Metal cylinder, closed at one end, about 3 litres (diameter ≈ height)</li><li>Tamping rod, 16 mm diameter, 60 cm long, rounded at one end</li><li>Metal scoop (~1 litre heaped), balance (10 kg, readable to 1 g), IS sieves</li></ul>
+  <h3>Procedure</h3>
+  <ul>
+   <li>Calibrate the cylinder: weigh it empty, fill it with water, and weigh again. Water weight = <b>C</b>.</li>
+   <li>Take single-size aggregate retained between a pair of sieves (20–16, 16–12.5, 12.5–10, 10–6.3 or 6.3–4.75 mm). Wash and oven-dry it, then cool.</li>
+   <li>Fill the cylinder in three layers. Compact each layer with 100 blows of the rod (about 2 blows per second, rod lifted about 5 cm and dropped), spread evenly over the surface.</li>
+   <li>After the third layer, fill to overflowing and strike off the surplus using the rod as a straight edge.</li>
+   <li>Weigh the cylinder with aggregate. Repeat for three separate fillings and take the mean weight of aggregate (<b>W</b>).</li>
+   <li>Determine the specific gravity of the aggregate (<b>G</b>).</li>
+   <li>In this page, enter the cylinder weight, the cylinder + aggregate weight (use the mean of the three), the cylinder + water weight and G.</li>
+  </ul>
+  <h3>Calculation &amp; interpretation</h3>
+  <ul>
+   <li>Angularity Number = 67 − (100 W ÷ C G), reported to the nearest whole number.</li>
+   <li>Values range roughly from 0 (rounded) to about 11 (very angular). Around 7–10 is generally preferred for road work.</li>
+   <li>Not suitable for aggregate that breaks down during compaction.</li>
+  </ul>
+ </div>
+
+ <div class="card">
+  <h2>3. Aggregate Impact Value</h2>
+  <div class="ref">Ref: IS 2386 (Part 4) – 1963; limits from IS 383.</div>
+  <h3>Apparatus</h3>
+  <ul><li>Impact testing machine (steel cup 102 mm dia, hammer of about 14 kg with 380 mm free fall)</li><li>Cylindrical measure, 75 mm dia × 50 mm deep</li><li>Tamping rod, 10 mm dia, 230 mm long, rounded at one end</li><li>IS sieves 12.5, 10 and 2.36 mm; balance readable to 0.1 g; oven (100–110 °C)</li></ul>
+  <h3>Procedure</h3>
+  <ul>
+   <li>Sieve the aggregate; the test sample is the portion passing 12.5 mm and retained on 10 mm.</li>
+   <li>Dry the sample in an oven at 100–110 °C for 4 hours and cool to room temperature.</li>
+   <li>Fill the measure in three layers (about one-third depth each), giving each layer 25 gentle blows with the tamping rod. Strike off the surplus.</li>
+   <li>Weigh the aggregate in the measure (<b>W1</b>).</li>
+   <li>Transfer the whole sample to the cup, fixed firmly on the machine base, and tamp it 25 times.</li>
+   <li>Raise the hammer until its lower face is 380 mm above the aggregate surface and let it fall freely. Give a total of 15 blows, at least 1 second apart.</li>
+   <li>Remove the crushed aggregate and sieve it through the 2.36 mm sieve until almost nothing more passes.</li>
+   <li>Weigh the fraction passing 2.36 mm (<b>W2</b>) and the fraction retained (<b>W3</b>). W2 + W3 should be within 1 g of W1, otherwise repeat the test.</li>
+   <li>Do two trials and take the mean.</li>
+  </ul>
+  <h3>Calculation &amp; limits</h3>
+  <ul>
+   <li>Impact Value (%) = (W2 ÷ W1) × 100, reported to the nearest whole number as the mean of the two trials.</li>
+   <li>Common grading: below 10% exceptionally strong; 10–20% strong; 20–30% satisfactory for road surfacing; above 35% weak for road surfacing.</li>
+   <li>IS 383: max 30% for wearing surfaces, 45% for other concrete.</li>
+  </ul>
+ </div>
+ <p class="f">These are summary notes for quick reference. Always follow the full IS code and your laboratory's own SOP, and note that equipment details (dimensions, hammer weight, calibration) should be verified against the current standard.</p>
 </section>
 </main>
 <script>
@@ -165,9 +246,9 @@ function aivCalc(){
 ab.addEventListener("input",aivCalc);
 $("rs3").onclick=()=>{ab.querySelectorAll("input").forEach(i=>i.value="");aivCalc()};
 function tab(n){
-  [1,2,3].forEach(i=>{$("p"+i).classList.toggle("hide",n!=i);$("t"+i).classList.toggle("on",n==i);});
+  [1,2,3,4].forEach(i=>{$("p"+i).classList.toggle("hide",n!=i);$("t"+i).classList.toggle("on",n==i);});
 }
-$("t1").onclick=()=>tab(1);$("t2").onclick=()=>tab(2);$("t3").onclick=()=>tab(3);
+$("t1").onclick=()=>tab(1);$("t2").onclick=()=>tab(2);$("t3").onclick=()=>tab(3);$("t4").onclick=()=>tab(4);
 calc();ang();aivCalc();
 </script>
 </body>
