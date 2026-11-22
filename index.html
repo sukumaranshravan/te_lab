@@ -46,6 +46,7 @@ button.reset{margin-top:10px;padding:8px 14px;border:1px solid var(--bd);backgro
 <div class="tabs">
  <button id="t1" class="on">Flakiness &amp; Elongation</button>
  <button id="t2">Angularity Number</button>
+ <button id="t3">Impact Value</button>
 </div>
 
 <section id="p1">
@@ -84,6 +85,20 @@ button.reset{margin-top:10px;padding:8px 14px;border:1px solid var(--bd);backgro
   <div class="r"><span>Angularity Number = 67 − (100W ÷ CG)</span><b id="aN">–</b></div>
  </div>
  <p class="f">Result is rounded to the nearest whole number, as in the spreadsheet.</p>
+</section>
+<section id="p3" class="hide">
+ <div class="card scroll">
+  <table>
+   <thead><tr><th>Trial</th><th>W1: Weight of oven-dry aggregate in measure (g)</th><th>W2: Weight passing 2.36 mm sieve (g)</th><th>W3: Weight retained on 2.36 mm sieve (g)</th><th>Check: W1 − (W2+W3)</th><th>Impact Value = W2 ÷ W1 × 100</th></tr></thead>
+   <tbody id="aiv"></tbody>
+  </table>
+ </div>
+ <div class="res">
+  <div class="r"><span>Mean Aggregate Impact Value</span><b id="aivM">–</b></div>
+  <div class="r"><span>Classification</span><b id="aivC" style="font-size:1.1rem">–</b></div>
+ </div>
+ <p class="f">Test per IS 2386 (Part 4): two trials on the 12.5–10 mm fraction. W2 + W3 should be within 1 g of W1, otherwise the trial should be repeated. IS 383 limits: 30% max for wearing surfaces, 45% max for other concrete. Enter one trial only if you don't have a second; blank trials are ignored in the mean.</p>
+ <button class="reset" id="rs3">Clear all inputs</button>
 </section>
 </main>
 <script>
@@ -124,12 +139,36 @@ function ang(){
   $("aN").textContent=(C>0&&G>0)?Math.round(67-(100*Wt)/(C*G)):"–";
 }
 ["a1","a2","a3","a4"].forEach(i=>$(i).addEventListener("input",ang));
-function tab(n){
-  $("p1").classList.toggle("hide",n!=1);$("p2").classList.toggle("hide",n!=2);
-  $("t1").classList.toggle("on",n==1);$("t2").classList.toggle("on",n==2);
+const ab=$("aiv");
+[["","",""],["","",""]].forEach((s,i)=>{
+  const tr=document.createElement("tr");
+  tr.innerHTML=`<td>${i+1}</td><td><input type="number" min="0" step="any" data-k="1"></td><td><input type="number" min="0" step="any" data-k="2"></td><td><input type="number" min="0" step="any" data-k="3"></td><td class="c" data-k="chk">–</td><td class="c" data-k="val"><b>–</b></td>`;
+  ab.appendChild(tr);
+});
+function aivCalc(){
+  const vals=[];
+  [...ab.rows].forEach(tr=>{
+    const q=k=>tr.querySelector(`input[data-k="${k}"]`);
+    const w1=parseFloat(q(1).value),w2=parseFloat(q(2).value),w3=parseFloat(q(3).value);
+    const chk=tr.querySelector("[data-k=chk]"),val=tr.querySelector("[data-k=val]");
+    if(w1>0&&Number.isFinite(w2)){
+      const a=w2/w1*100;vals.push(a);
+      val.innerHTML="<b>"+a.toFixed(2)+"%</b>";
+      if(Number.isFinite(w3)){const d=w1-(w2+w3);chk.textContent=d.toFixed(1)+" g "+(Math.abs(d)<=1?"✓ OK":"⚠ exceeds 1 g");}else chk.textContent="–";
+    }else{val.innerHTML="<b>–</b>";chk.textContent="–";}
+  });
+  if(!vals.length){$("aivM").textContent="–";$("aivC").textContent="–";return;}
+  const m=vals.reduce((a,b)=>a+b,0)/vals.length;
+  $("aivM").textContent=m.toFixed(2)+"%";
+  $("aivC").textContent=m<10?"Exceptionally strong":m<20?"Strong":m<=30?"Satisfactory for wearing surfaces":m<=45?"Above 30% wearing-surface limit; within 45% limit":"Above 45% limit";
 }
-$("t1").onclick=()=>tab(1);$("t2").onclick=()=>tab(2);
-calc();ang();
+ab.addEventListener("input",aivCalc);
+$("rs3").onclick=()=>{ab.querySelectorAll("input").forEach(i=>i.value="");aivCalc()};
+function tab(n){
+  [1,2,3].forEach(i=>{$("p"+i).classList.toggle("hide",n!=i);$("t"+i).classList.toggle("on",n==i);});
+}
+$("t1").onclick=()=>tab(1);$("t2").onclick=()=>tab(2);$("t3").onclick=()=>tab(3);
+calc();ang();aivCalc();
 </script>
 </body>
 </html>
